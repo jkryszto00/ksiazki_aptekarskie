@@ -17,8 +17,8 @@ class BookUpdateRequest extends FormRequest
     {
         return [
             'title' => 'required|string|max:255',
-            'authors' => 'required|array|min:1',
-            'authors.*' => 'required|integer|exists:authors,id',
+            'authors' => 'sometimes|array|min:1',
+            'authors.*' => 'sometimes|integer|exists:authors,id',
         ];
     }
 
@@ -26,7 +26,7 @@ class BookUpdateRequest extends FormRequest
     {
         return new UpdateBookData(
             $this->validated('title'),
-            new AuthorsIdsData($this->validated('authors'))
+            new AuthorsIdsData($this->validated('authors')) ?? null
         );
     }
 }
