@@ -1,59 +1,88 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Wymagania
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+- PHP 8.2+
+- Composer
+- SQLite
 
-## About Laravel
+## Instalacja
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+```bash
+# Klonowanie repozytorium
+git clone <repo-url>
+cd 300books
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+# Instalacja zależności
+composer install
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+# Konfiguracja środowiska
+cp .env.example .env
+php artisan key:generate
 
-## Learning Laravel
+# Migracje bazy danych
+php artisan migrate
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+# (Opcjonalnie) Uruchomienie kolejki
+php artisan queue:work
+```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Uruchomienie
 
-## Laravel Sponsors
+```bash
+php artisan serve
+```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+API będzie dostępne pod adresem: `http://localhost:8000/api`
 
-### Premium Partners
+## Uruchomienie testów
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+```bash
+php artisan test
+```
 
-## Contributing
+## Endpointy API
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Książki
 
-## Code of Conduct
+| Metoda | Endpoint | Opis | Auth    |
+|--------|----------|------|---------|
+| GET | `/api/books` | Lista książek z paginacją | -       |
+| GET | `/api/books/{id}` | Szczegóły książki | -       |
+| POST | `/api/books` | Dodanie nowej książki | Sanctum |
+| PUT | `/api/books/{id}` | Aktualizacja książki | -       |
+| DELETE | `/api/books/{id}` | Usunięcie książki | -       |
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### Autorzy
 
-## Security Vulnerabilities
+| Metoda | Endpoint | Opis | Auth |
+|--------|----------|------|------|
+| GET | `/api/authors` | Lista autorów z paginacją | - |
+| GET | `/api/authors/{id}` | Szczegóły autora | - |
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### Parametry zapytań
 
-## License
+- `search` - wyszukiwanie (książki po tytule, autorzy po tytułach książek)
+- `per_page` - liczba wyników na stronie (domyślnie 25)
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## Przykłady użycia
+
+```bash
+# Lista książek
+curl http://localhost:8000/api/books
+
+# Dodanie książki (wymaga tokenu Sanctum)
+curl -X POST http://localhost:8000/api/books \
+  -H "Authorization: Bearer {token}" \
+  -H "Content-Type: application/json" \
+  -d '{"title": "Nowa książka", "authors": [1, 2]}'
+
+# Wyszukiwanie autorów po tytule książki
+curl "http://localhost:8000/api/authors?search=Laravel"
+```
+
+## Komenda Artisan
+
+Tworzenie nowego autora:
+
+```bash
+php artisan create:author
+```
