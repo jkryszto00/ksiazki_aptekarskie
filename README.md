@@ -60,8 +60,8 @@ php artisan test
 
 ### Parametry zapytań
 
-- `search` - wyszukiwanie (książki po tytule, autorzy po tytułach książek)
-- `per_page` - liczba wyników na stronie (domyślnie 25)
+- `search` - wyszukiwanie (autorzy po tytułach książek)
+- `per_page` - liczba wyników na stronie (domyślnie 10)
 
 ## Przykłady użycia
 
