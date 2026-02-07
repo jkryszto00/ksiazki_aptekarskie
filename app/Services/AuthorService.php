@@ -8,11 +8,15 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 final class AuthorService
 {
-    public function searchByBookTitle(string $search = null, int $limit = 10): LengthAwarePaginator
+    public function searchByBookTitle(?string $search = null, int $limit = 10): LengthAwarePaginator
     {
         return Author::query()
             ->with('books')
-            ->whereHas('books', fn ($query) => $query->where('title', 'like', "%{$search}%"))
+            ->when(
+                $search,
+                fn ($q, $search) => $q->whereHas('books', fn ($bq) => $bq->where('title', 'LIKE', "%{$search}%")),
+            )
+            ->latest()
             ->paginate ($limit);
     }
 
